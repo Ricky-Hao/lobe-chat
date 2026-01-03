@@ -300,7 +300,10 @@ export const conversationLifecycle: StateCreator<
         const isAbort = e.message.includes('aborted') || e.name === 'AbortError';
         // Check if error is due to cancellation
         if (!isAbort) {
-          get().updateOperationMetadata(operationId, { inputSendErrorMsg: e.message });
+          // Ensure error message is always a string (not an object) to avoid React Error #31
+          const errorMsg =
+            typeof e.message === 'string' ? e.message : JSON.stringify(e.message, null, 2);
+          get().updateOperationMetadata(operationId, { inputSendErrorMsg: errorMsg });
           get().mainInputEditor?.setJSONState(jsonState);
         }
       }
