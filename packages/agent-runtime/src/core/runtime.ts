@@ -890,10 +890,16 @@ export class AgentRuntime {
   ): { events: AgentEvent[]; newState: AgentState } {
     const errorState = structuredClone(state);
     errorState.status = 'error';
-    errorState.error = error;
+    // Ensure error is always a string to prevent "[object Object]" display
+    errorState.error =
+      typeof error === 'string'
+        ? error
+        : error instanceof Error
+          ? error.message
+          : JSON.stringify(error);
     errorState.lastModified = new Date().toISOString();
 
-    const errorEvent = { error, type: 'error' } as const;
+    const errorEvent = { error: errorState.error, type: 'error' } as const;
 
     return {
       events: [errorEvent],

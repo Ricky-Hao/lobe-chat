@@ -102,6 +102,7 @@ export interface AgentState {
 
   // --- Metadata ---
   createdAt: string;
+  /** Error information if status is 'error'. Stored as string for display. */
   error?: any;
   lastModified: string;
 
